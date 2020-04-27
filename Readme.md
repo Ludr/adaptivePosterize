@@ -1,0 +1,2 @@
+[GIMP]
+Mono Mixer -> Equalize
