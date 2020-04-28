@@ -1,13 +1,18 @@
 
+from utilities.threshold import threshold_phansalkar
+
 import matplotlib
-matplotlib.use('Qt5Agg')
+import PyQt5
 import matplotlib.pyplot as plt
 
 from skimage.filters import threshold_multiotsu, threshold_sauvola
 from skimage import io, color, exposure
 
+
 from scipy import ndimage
 import numpy as np
+
+matplotlib.use('Qt5Agg')
 
 
 def main():
@@ -22,6 +27,7 @@ def main():
     #thresholds = threshold_multiotsu(img_denoise, classes=10)
     #regions = np.digitize(crop, bins=thresholds)
     regions = threshold_sauvola(img_denoise)
+    regions = threshold_phansalkar(crop, 15)
 
     plt.imshow(img_denoise, cmap='gray')
     plt.show()
