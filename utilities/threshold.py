@@ -1,19 +1,39 @@
 import numpy as np
 
+
 def threshold_phansalkar_multi(image, max_radius, classes=3):
-    pass
 
-def threshold_phansalkar(image, radius):
-    # check if image is grayscale
+    result = np.zeros(image.shape)
+    arr = (3, 7, 15)
+    for radius in arr:
+        result += threshold_phansalkar(image, radius)
 
-    # add image padding
+    return result
 
-    # loop over pixels
 
-    # create window
-    # calculate phansalker threshold
+def threshold_phansalkar(img, radius):
+    """
+    https://landscapearchaeology.org/2018/numpy-loops/
+    :param img:
+    :param radius:
+    :return:
+    """
+    # TODO check if image is grayscale
 
-    pass
+    size = radius // 2  # window size i.e. here is 3x3 window
+
+    img = np.pad(img, size, 'edge')
+    img_shape = img.shape
+
+    shape = (img.shape[0] - size + 1, img.shape[1] - size + 1, size, size)
+    strides = 2 * img.strides
+    patches = np.lib.stride_tricks.as_strided(img, shape=shape, strides=strides)
+    patches = patches.reshape(-1, size, size)
+
+    output_img = np.array([_phansalkar(roi) for roi in patches])
+    output_img = np.reshape(output_img, shape[:2])
+
+    return output_img
 
 
 def _phansalkar(arr, k=0.25, r=0.5):
@@ -45,7 +65,7 @@ def _phansalkar(arr, k=0.25, r=0.5):
     mean = np.mean(arr)
     stdev = np.std(arr)
 
-    center = center = np.take(arr, arr.size // 2)
+    center = np.take(arr, arr.size // 2)
 
     t = mean * (1 + p * np.exp(-q * mean) + k * ((stdev / r) - 1))
 
